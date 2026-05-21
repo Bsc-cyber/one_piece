@@ -1,0 +1,156 @@
+/* Reset padrão */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #0c0f1d; /* Fundo escuro premium */
+    color: #f8fafc;
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* --- CONTAINER DA IMAGEM SUPERIOR --- */
+.topo-imagem-container {
+    position: relative;
+    width: 100%;
+    max-height: 60vh; /* Ocupa no máximo 60% da altura do navegador */
+    overflow: hidden;
+    background-color: #000;
+}
+
+.imagem-topo {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    animation: fadeEntrada 1.2s ease-out forwards;
+}
+
+/* Transição de sombra suave entre a foto e o fundo do site */
+.sombra-inferior {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background: linear-gradient(to top, #0c0f1d, transparent);
+}
+
+/* --- BLOCO DE CONTEÚDO (ESCRITA EMBAIXO) --- */
+.conteudo-site {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 5rem 1.5rem;
+    animation: subirTexto 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.cabecalho-texto {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.subtitulo-musica {
+    color: #fbbf24; /* Amarelo ouro emblemático */
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.cabecalho-texto h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 4rem;
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: #ffffff;
+    text-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+    margin-bottom: 1rem;
+}
+
+.introducao {
+    color: #94a3b8;
+    font-size: 1.15rem;
+    max-width: 600px;
+    margin: 0 auto 2rem auto;
+}
+
+/* --- BOTÕES INTERATIVOS DE SELEÇÃO --- */
+.botoes-grupo {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.btn-brook {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%); /* Azul do lenço */
+    color: white;
+    text-decoration: none;
+    padding: 0.8rem 2rem;
+    font-weight: 600;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(29, 78, 216, 0.3);
+    transition: all 0.2s ease;
+}
+
+.btn-brook:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(29, 78, 216, 0.5);
+}
+
+.btn-secundario {
+    background: transparent;
+    border: 2px solid #fbbf24;
+    color: #fbbf24;
+    box-shadow: none;
+}
+
+.btn-secundario:hover {
+    background: #fbbf24;
+    color: #0c0f1d;
+    box-shadow: 0 8px 20px rgba(251, 191, 36, 0.3);
+}
+
+.divisor-linha {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(251, 191, 36, 0.4), transparent);
+    margin: 2.5rem 0;
+}
+
+/* --- TEXTOS DA BIOGRAFIA --- */
+.biografia-secao h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    color: #fbbf24;
+    margin-bottom: 1.2rem;
+}
+
+.biografia-secao p {
+    color: #cbd5e1;
+    font-size: 1.05rem;
+    margin-bottom: 1.5rem;
+    text-align: justify;
+}
+
+/* --- ANIMAÇÕES --- */
+@keyframes fadeEntrada {
+    from { opacity: 0; transform: scale(1.03); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes subirTexto {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ajuste fino para smartphones */
+@media (max-width: 600px) {
+    .cabecalho-texto h1 { font-size: 2.8rem; }
+    .botoes-grupo { flex-direction: column; gap: 0.8rem; }
+    .btn-brook { width: 100%; text-align: center; }
+}

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Tripulação dos Chapéus de Palha</title>
+    <style>
+        @import url('https://googleapis.com');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #020617; color: #f8fafc;
+            padding: 60px 20px; max-width: 900px; margin: 0 auto;
+            position: relative; line-height: 1.6;
+        }
+
+        /* Fundo temático azul escuro marítimo integrado ao design do ex_10 */
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% -20%, rgba(56, 189, 248, 0.1) 0%, transparent 60%);
+            pointer-events: none; z-index: -1;
+        }
+
+        .btn-voltar {
+            display: inline-block; padding: 12px 24px; border-radius: 12px;
+            background: rgba(15, 23, 42, 0.6); border: 1px solid #eab308;
+            color: #eab308; text-decoration: none; margin-bottom: 40px; 
+            font-weight: 600; transition: all 0.3s ease;
+        }
+        .btn-voltar:hover { background: #eab308; color: #020617; transform: translateX(-5px); }
+
+        h1 { 
+            font-size: 2.8rem; font-weight: 900; margin-bottom: 30px;
+            background: linear-gradient(120deg, #fef08a, #eab308, #ca8a04);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            border-bottom: 2px solid rgba(234, 179, 8, 0.3); padding-bottom: 15px;
+        }
+
+        h2 { font-size: 1.6rem; color: #eab308; margin-top: 40px; margin-bottom: 15px; font-weight: 700; }
+        p { font-size: 1.05rem; color: #cbd5e1; margin-bottom: 20px; text-align: justify; }
+        
+        ul { margin-left: 20px; margin-bottom: 25px; color: #cbd5e1; }
+        li { margin-bottom: 15px; font-size: 1.05rem; }
+        strong { color: #fde047; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <!-- Botão com inteligência de histórico (Volta sem errar o caminho) -->
+    <a href="#" onclick="window.history.back(); return false;" class="btn-voltar">⬅ Voltar para a Grand Line</a>
+    
+    <h1>Os Piratas do Chapéu de Palha: A Tripulação de Elite</h1>
+    
+    <p>Para navegar pela perigosa Grand Line e desafiar as maiores potências do mundo, Luffy reuniu uma tripulação de elite com sonhos ambiciosos e talentos técnicos insubstituíveis. O bando começou como um pequeno grupo de desajustados no Mar do Leste e evoluiu para uma das organizações mais temidas do planeta, reconhecida oficialmente como a frota de um Yonkou (Imperador do Mar).</p>
+
+    <h2>1. A Força de Combate Absoluta (Os Monstros da Tripulação)</h2>
+    <p>O poder militar do bando é liderado por guerreiros formidáveis que dominam as técnicas avançadas de Haki e modificações biológicas:</p>
+    <ul>
+        <li><strong>Roronoa Zoro (O Espadachim):</strong> Primeiro aliado a se juntar a Luffy. Mestre no estilo de três espadas (Santoryu) e portador do raríssimo Haki do Conquistador Avançado. Seu objetivo de vida é derrotar Dracule Mihawk para se tornar o maior espadachim do mundo.</li>
+        <li><strong>Vinsmoke Sanji (O Cozinheiro):</strong> O rei dos mares culinários e um combatente devastador. Utiliza apenas as pernas para lutar através do estilo *Black Leg* para proteger suas mãos de cozinheiro. Graças ao despertar de seus genes modificados, ganhou um exoesqueleto indestrutível e chamas azuis (*Ifrit Jambe*). Busca o lendário mar All Blue.</li>
+        <li><strong>Jinbe (O Timoneiro):</strong> O Cavaleiro do Mar e ex-Shichibukai. Mestre supremo do Karatê Homem-Peixe, possui uma força física colossal e uma sabedoria tática vital para o grupo. Sua habilidade de timoneiro permite guiar o navio Thousand Sunny através das ondas e correntes mais perigosas do planeta.</li>
+    </ul>
+
+    <h2>2. O Suporte Técnico e Científico Essencial</h2>
+    <p>Sem engenharia avançada e cuidados médicos especializados, nenhuma tripulação seria capaz de sobreviver às anomalias climáticas da Grand Line:</p>
+    <ul>
+        <li><strong>Tony Tony Chopper (O Médico):</strong> Uma rena de nariz azul que consumiu a Hito Hito no Mi (Fruta do Humano). Desenvolveu as *Rumble Balls*, pílulas científicas que alteram suas transformações Zoan, permitindo que ele assuma a forma de um monstro gigante (*Monster Point*). Seu sonho é criar a cura para todas as doenças existentes.</li>
+        <li><strong>Franky (O Engenheiro Naval):</strong> Um ciborgue movido a cola e um carpinteiro genial. Aluno do lendário Tom, ele construiu o atual navio do bando, o <strong>Thousand Sunny</strong>, utilizando a raríssima Madeira de Adam. Viaja com o grupo para garantir que sua obra-prima navegue com sucesso até o fim do mundo.</li>
+    </ul>
+
+    <h2>3. A Estratégia, Inteligência e Suporte Tático</h2>
+    <p>O bando também conta com especialistas focados em espionagem, navegação milimétrica, história proibida e suporte de longa distância:</p>
+    <ul>
+        <li><strong>Nami (A Navegadora):</strong> A mente tática por trás de todas as rotas do bando. Possui uma sensibilidade biológica incomum para prever o clima e tempestades na Grand Line antes mesmo que elas se formem. Utiliza o bastão climático *Sorcery Clima-Tact* fundido com o Zeus. Seu sonho é desenhar o mapa-mundi completo.</li>
+        <li><strong>Nico Robin (A Arqueóloga):</strong> Conhecida como a "Cria do Demônio", é a única pessoa viva na superfície da Terra capaz de decifrar a escrita antiga dos Poneglyphs. Usuária da Hana Hana no Mi, ela consegue brotar partes do seu corpo em qualquer superfície. Sua existência é a maior ameaça direta ao Governo Mundial.</li>
+        <li><strong>Usopp (O Cacciador/Atirador):</strong> Filho do famoso atirador Yasopp. Possui uma precisão cirúrgica impecável de longa distância utilizando seu estilingue gigante *Kabuto* carregado com sementes pop verdes (*Pop Greens*). Despertou o Haki da Observação e almeja se tornar um bravo guerreiro do mar.</li>
+        <li><strong>Brook (O Músico):</strong> Um esqueleto vivo que ressuscitou graças aos poderes da Yomi Yomi no Mi (Fruta da Ressurreição). Mestre esgrimista que utiliza ataques congelantes baseados na energia do submundo, além de usar sua música hipnótica para controlar as almas dos adversários. Deseja reencontrar a baleia Laboon.</li>
+    </ul>
+</body>
+</html>

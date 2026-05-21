@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Piece - Grand Line Arcade (Ultimate Edition)</title>
+    <link href="https://googleapis.com" rel="stylesheet">
+    
+    <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        
+        body {
+            background: radial-gradient(circle at center, #1e1b4b 0%, #0f051d 100%);
+            color: #f8fafc; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; padding-top: 80px;
+        }
+
+        /* --- ANIMAÇÃO DE FUNDO DO ARCADE --- */
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+                        radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+                        radial-gradient(3px 3px at 50px 160px, #ddd, rgba(0,0,0,0));
+            background-size: 200px 200px; animation: estrelasFluindo 20s linear infinite; z-index: -1; opacity: 0.3;
+        }
+
+        @keyframes estrelasFluindo {
+            from { background-position: 0 0; }
+            to { background-position: 0 1000px; }
+        }
+
+        .painel-status-superior {
+            position: fixed; top: 0; left: 0; width: 100%; height: 75px; background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px); border-bottom: 2px solid rgba(251, 191, 36, 0.4); z-index: 1000;
+            display: flex; justify-content: space-around; align-items: center; padding: 0 1rem; box-shadow: 0 4px 30px rgba(0,0,0,0.6);
+        }
+
+        .status-box { text-align: center; }
+        .status-box h5, .status-box h6 { font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; letter-spacing: 1px; margin-bottom: 2px; }
+        .valor-total { font-size: 1.3rem; font-weight: 800; color: #fbbf24; text-shadow: 0 0 15px rgba(251, 191, 36, 0.6); animation: neonPulse 1.5s ease-in-out infinite alternate; }
+        .titulo-patente { font-size: 1.1rem; font-weight: 800; color: #38bdf8; text-shadow: 0 0 8px rgba(56, 189, 248, 0.5); }
+        .barra-xp-container { width: 180px; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; margin-top: 4px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+        .barra-xp-preenchimento { height: 100%; width: 0%; background: linear-gradient(90deg, #3b82f6, #0ea5e9); border-radius: 4px; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; max-width: 1000px; margin: 0 auto; width: 100%; }
+        
+        /* CONTAINER PRINCIPAL COM EFEITO SHAKE */
+        .game-container {
+            background: rgba(15, 23, 42, 0.75); border: 2px solid rgba(251, 191, 36, 0.2); border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(251, 191, 36, 0.05); width: 100%; max-width: 850px; aspect-ratio: 16 / 9;
+            display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; backdrop-filter: blur(16px);
+        }
+
+        /* ANIMAÇÃO DE IMPACTO/DANO NA TELA */
+        .shake { animation: shakeImpacto 0.3s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shakeImpacto {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+            40%, 60% { transform: translate3d(6px, 0, 0); }
+        }
+
+        .btn-game, .btn-back-menu {
+            background: linear-gradient(135deg, #e11d48 0%, #9f1239 100%); color: white; border: none;
+            padding: 0.8rem 1.5rem; font-size: 0.9rem; font-weight: 600; border-radius: 12px; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px rgba(225, 29, 72, 0.3);
+        }
+        .btn-game:hover, .btn-back-menu:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 0 20px rgba(225, 29, 72, 0.6); filter: brightness(1.2); }
+        .btn-back-menu { position: absolute; top: 15px; left: 15px; background: linear-gradient(135deg, #475569 0%, #1e293b 100%); z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .btn-exit { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.1); border: none; color: white; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; font-size: 1.1rem; z-index: 10; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .btn-exit:hover { background: #e11d48; transform: rotate(90deg); box-shadow: 0 0 15px #e11d48; }
+
+        /* GRADE DE CARTÕES DO MENU COM TRANSICÃO EM STAGGER */
+        .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; width: 95%; max-width: 800px; animation: entradaSuave 0.5s ease-out; }
+        @keyframes entradaSuave { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .menu-card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; padding: 1rem; text-align: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; }
+        .menu-card:hover { background: rgba(30, 41, 59, 0.9); border-color: #fbbf24; transform: translateY(-5px) scale(1.04); box-shadow: 0 10px 25px rgba(251, 191, 36, 0.15); }
+        .menu-card h3 { color: #fbbf24; margin-top: 0.4rem; font-size: 1rem; text-shadow: 0 0 5px rgba(251,191,36,0.2); }
+        .menu-card p { font-size: 0.7rem; color: #94a3b8; }
+        
+        .seletor-nivel { display: flex; gap: 10px; justify-content: center; margin-bottom: 1rem; animation: entradaSuave 0.4s ease-out; }
+        .btn-lvl { background: #334155; color: #94a3b8; border: none; padding: 6px 18px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.8rem; transition: all 0.2s; }
+        .btn-lvl.active { background: #fbbf24; color: #0f172a; box-shadow: 0 0 15px rgba(251, 191, 36, 0.5); font-weight: 800; transform: scale(1.05); }
+
+        /* BOXES INTERNOS E OPÇÕES DO QUIZ ANIMADAS */
+        .quiz-box { width: 85%; text-align: center; animation: entradaSuave 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .quiz-opt { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); padding: 0.7rem; margin: 0.4rem 0; border-radius: 12px; cursor: pointer; font-weight: 600; transition: all 0.2s; text-align: left; }
+        .quiz-opt:hover { background: rgba(255, 255, 255, 0.12); border-color: #fbbf24; transform: translateX(5px); }
+        
+        /* INTERFACE DA MEMÓRIA INTEGRADA */
+        #grid-cartas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; max-width: 480px; margin: 0 auto; animation: entradaSuave 0.5s ease; }
+        .card3d { perspective: 1000px; height: 85px; cursor: pointer; }
+        .card3d-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; }
+        .card3d.flipped .card3d-inner { transform: rotateY(180deg); }
+        .card3d-front, .card3d-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 12px; border: 2px solid rgba(255,255,255,0.08); }
+        .card3d-front { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #fbbf24; text-shadow: 0 0 10px rgba(251,191,36,0.4); }
+        .card3d-back { transform: rotateY(180deg); overflow: hidden; background-color: #0f172a; box-shadow: inset 0 0 15px rgba(0,0,0,0.6); }
+        .card3d-back img { width: 100%; height: 100%; object-fit: contain; transform: scale(0.95); transition: transform 0.2s; }
+        .card3d:hover .card3d-back img { transform: scale(1.05); }
+
+        /* PARTICULAS DE DANO DO CLICKER */
+        .particula-click { position: absolute; font-weight: 800; color: #fbbf24; pointer-events: none; animation: flutuarSubir 0.6s ease-out forwards; text-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 100; }
+        @keyframes flutuarSubir { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(-60px) scale(1.4); } }
+        
+        @keyframes neonPulse { from { text-shadow: 0 0 5px rgba(251, 191, 36, 0.4); } to { text-shadow: 0 0 18px rgba(251, 191, 36, 0.8); } }
+
+    </style>
+</head>
+<body>
+
+    <!-- PAINEL DE STATUS INTEGRADO E FIXO (Com o novo botão Sair) -->
+    <div class="painel-status-superior">
+        <!-- NOVO BOTÃO PARA VOLTAR À PÁGINA PRINCIPAL -->
+        <button onclick="window.location.href='index.html'" style="background: linear-gradient(135deg, #1e1b4b 0%); color: #fbbf24; border: 1px solid #fbbf24(255,255,255,0.2); padding: 0.5rem 1rem; font-size: 0.8rem; font-weight: 800; border-radius: 8px; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: all 0.2s;">
+            VOLTAR À PÁGINA PRINCIPAL
+        </button>
+
+        <div class="status-box">
+            <h5>Recompensa Coletada</h5>
+            <div class="valor-total" id="total-berries">฿ 0</div>
+        </div>
+        <div class="status-box">
+            <h6>Patente Pirata</h6>
+            <div class="titulo-patente" id="nome-patente">Recruta Clevel</div>
+            <div class="barra-xp-container">
+                <div class="barra-xp-preenchimento" id="progresso-xp"></div>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <!-- Seletor de dificuldade global -->
+        <div class="seletor-nivel" id="seletor-dificuldade">
+            <button class="btn-lvl active" id="btn-facil" onclick="mudarDificuldade('facil')">East Blue (Fácil)</button>
+            <button class="btn-lvl" id="btn-dificil" onclick="mudarDificuldade('dificil')">Novo Mundo (Difícil)</button>
+        </div>
+        <div class="game-container" id="tela-jogo"></div>
+    </main>
+
+    <div class="area-conquistas" id="container-notificacao"></div>
+
+    <footer>
+        <p style="text-align: center; color: #475569; padding: 1.5rem; font-size: 0.85rem;">&copy; 2026 Grand Line Arcade. Sistema Multi-Níveis Ativo.</p>
+    </footer>
+
+        <script>
+        const tela = document.getElementById('tela-jogo');
+        const totalBerriesElement = document.getElementById('total-berries');
+        const progressoXpElement = document.getElementById('progresso-xp');
+        const nomePatenteElement = document.getElementById('nome-patente');
+        const containerNotificacao = document.getElementById('container-notificacao');
+
+        let quizTimerInterval;
+        let recompensaAcumulada = 0;
+        let pirataXp = 0;
+        let conquistasLiberadas = { supremo: false };
+        
+        let dificuldadeAtual = 'facil'; 
+        let multiplicadorRecompensa = 1;
+
+        // --- SISTEMA DE ANIMAÇÃO DE IMPACTO (SHAKE TELA) ---
+        function aplicarTremor() {
+            const container = document.querySelector('.game-container');
+            container.classList.add('shake');
+            setTimeout(() => container.classList.remove('shake'), 300);
+        }
+
+        // --- SISTEMA DE TEXTOS EM FLUXO (TEXTO FLUTUANTE) ---
+        function criarTextoFlutuante(texto, x, y, cor = '#fbbf24') {
+            const txt = document.createElement('div');
+            txt.className = 'particula-click';
+            txt.innerText = texto;
+            txt.style.left = `${x}px`;
+            txt.style.top = `${y}px`;
+            txt.style.color = cor;
+            tela.appendChild(txt);
+            setTimeout(() => txt.remove(), 600);
+        }
+
+        function mudarDificuldade(nivel) {
+            dificuldadeAtual = nivel;
+            document.getElementById('btn-facil').classList.toggle('active', nivel === 'facil');
+            document.getElementById('btn-dificil').classList.toggle('active', nivel === 'dificil');
+            
+            if (nivel === 'facil') {
+                multiplicadorRecompensa = 1;
+                dispararNotificacao("Modo Alterado", "Navegando pelo East Blue (Recompensas padrão).");
+            } else {
+                multiplicadorRecompensa = 2.5;
+                dispararNotificacao("Perigo Absoluto", "Entrou no Novo Mundo! Jogos acelerados e Recompensas x2.5!");
+            }
+            mostrarMenu();
+        }
+
+        function ganharXP(quantidade) {
+            if (pirataXp >= 100) return;
+            pirataXp += dificuldadeAtual === 'dificil' ? quantidade * 2 : quantidade;
+            if (pirataXp > 100) pirataXp = 100;
+            
+            progressoXpElement.style.width = pirataXp + "%";
+            
+            if (pirataXp >= 30 && pirataXp < 70) {
+                nomePatenteElement.innerText = "Supernova";
+                nomePatenteElement.style.color = "#3b82f6";
+            }
+            if (pirataXp >= 70 && pirataXp < 100) { 
+                nomePatenteElement.innerText = "Comandante"; 
+                nomePatenteElement.style.color = "#a855f7"; 
+            }
+            if (pirataXp >= 100 && !conquistasLiberadas.supremo) {
+                conquistasLiberadas.supremo = true;
+                nomePatenteElement.innerText = "Yonkou 🏴‍☠️";
+                nomePatenteElement.style.color = "#ef4444";
+                setTimeout(() => dispararNotificacao("Lenda dos Mares", "Você se tornou um Imperador Yonkou!"), 500);
+            }
+        }
+
+        function adicionarBerries(qtd) {
+            recompensaAcumulada += Math.round(qtd * multiplicadorRecompensa);
+            totalBerriesElement.innerText = `฿ ${recompensaAcumulada.toLocaleString('pt-BR')}`;
+        }
+
+        function dispararNotificacao(titulo, desc) {
+            const box = document.createElement('div'); 
+            box.className = 'alerta-conquista';
+            box.innerHTML = `<div style="font-size:1.5rem;">🏆</div><div><h4>${titulo}</h4><p>${desc}</p></div>`;
+            containerNotificacao.appendChild(box);
+            setTimeout(() => { 
+                box.style.opacity = '0'; 
+                box.style.transform = 'translateX(50px)'; 
+                box.style.transition = 'all 0.5s ease'; 
+                setTimeout(() => box.remove(), 500); 
+            }, 3000);
+        }
+
+        function injetarBotaoSair() {
+            return `<button class="btn-exit" onclick="mostrarMenu()">✕</button>`;
+        }
+
+        function mostrarMenu() {
+            if (window.loopPlataforma) clearInterval(window.loopPlataforma);
+            if (quizTimerInterval) clearInterval(quizTimerInterval);
+            document.getElementById('seletor-dificuldade').style.display = 'flex';
+            
+            tela.innerHTML = `
+                <div class="menu-grid">
+                    <div class="menu-card" onclick="iniciarQuiz()">
+                        <div style="font-size: 1.8rem;">⏱️</div><h3>Haki Quiz</h3><p>Ganha Berries por acerto</p>
+                    </div>
+                    <div class="menu-card" onclick="iniciarPlataforma()">
+                        <div style="font-size: 1.8rem;">⚡</div><h3>Fuga do Sunny</h3><p>Desvie dos obstáculos</p>
+                    </div>
+                    <div class="menu-card" onclick="iniciarCartas()">
+                        <div style="font-size: 1.8rem;">😈</div><h3>Modo Pesadelo</h3><p>Jogo da memória real</p>
+                    </div>
+                    <div class="menu-card" onclick="iniciarTreinoHaki()">
+                        <div style="font-size: 1.8rem;">👁️</div><h3>Haki de Observação</h3><p>Acerte os alvos móveis</p>
+                    </div>
+                    <div class="menu-card" onclick="iniciarCliqueGears()">
+                        <div style="font-size: 1.8rem;">🍖</div><h3>Luffy Clicker</h3><p>Liberte a força dos Gears</p>
+                    </div>
+                    <div class="menu-card" onclick="iniciarBatalhaNaval()">
+                        <div style="font-size: 1.8rem;">🏴</div><h3>Batalha de Canhões</h3><p>Destrua a frota inimiga</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // 1. JOGO: HAKI QUIZ (Com efeitos e animações)
+        // ==========================================
+        function iniciarQuiz() {
+            document.getElementById('seletor-dificuldade').style.display = 'none';
+            const questoes = [
+                { q: "Qual o nome da Akuma no Mi de Luffy?", o: ["Gomu Gomu no Mi", "Mera Mera no Mi", "Gura Gura no Mi"], c: 0 },
+                { q: "Quem foi o primeiro membro do bando?", o: ["Sanji", "Zoro", "Nami"], c: 1 },
+                { q: "Qual o golpe principal do Gear 3?", o: ["Gatling", "Gigant Pistol", "Red Hawk"], c: 1 }
+            ];
+            let atual = 0; let acertos = 0;
+
+            function dispararTimer() {
+                let tempo = 100;
+                const barra = document.getElementById('quiz-bar');
+                let velocidadeDecréscimo = dificuldadeAtual === 'dificil' ? 2.5 : 1;
+                
+                quizTimerInterval = setInterval(() => {
+                    tempo -= velocidadeDecréscimo;
+                    if(barra) barra.style.width = tempo + "%";
+                    if(tempo <= 0) {
+                        clearInterval(quizTimerInterval);
+                        aplicarTremor();
+                        window.validarQuiz(-1, questoes[atual].c);
+                    }
+                }, 100);
+            }
+
+            function render() {
+                if(atual >= questoes.length) {
+                    tela.innerHTML = `
+                        ${injetarBotaoSair()}
+                        <div style="text-align:center; animation: entradaSuave 0.4s;">
+                            <h2>Quiz Finalizado!</h2>
+                            <p style="margin: 1rem 0;">Acertos: ${acertos}/${questoes.length}</p>
+                            <button class="btn-game" onclick="mostrarMenu()">Voltar</button>
+                        </div>
+                    `;
+                    return;
+                }
+                let p = questoes[atual];
+                let opcoes = p.o.map((opt, i) => `<div class="quiz-opt" onclick="window.validarQuiz(${i}, ${p.c}, event)">${opt}</div>`).join('');
+                
+                tela.innerHTML = `
+                    ${injetarBotaoSair()}
+                    <div class="quiz-box">
+                        <div class="timer-bar-container"><div id="quiz-bar" class="timer-bar"></div></div>
+                        <h2 style="margin: 0.4rem 0 1.2rem 0; font-size: 1.1rem;">${p.q}</h2>
+                        <div>${opcoes}</div>
+                    </div>
+                `;
+                dispararTimer();
+            }
+
+            window.validarQuiz = (escolha, correto, e) => {
+                clearInterval(quizTimerInterval);
+                const opcoesDivs = document.querySelectorAll('.quiz-opt');
+                opcoesDivs.forEach((div, idx) => {
+                    div.style.pointerEvents = 'none';
+                    if(idx === correto) { div.style.background = 'rgba(16, 185, 129, 0.3)'; div.style.borderColor = '#10b981'; }
+                    else if(idx === escolha) { div.style.background = 'rgba(225, 29, 72, 0.3)'; div.style.borderColor = '#e11d48'; }
+                });
+
+                if(escolha === correto) {
+                    acertos++;
+                    if(e) criarTextoFlutuante("+฿500K", e.clientX - tela.getBoundingClientRect().left, e.clientY - tela.getBoundingClientRect().top, '#10b981');
+                    adicionarBerries(500000); 
+                    ganharXP(4); 
+                } else {
+                    aplicarTremor();
+                }
+                setTimeout(() => { atual++; render(); }, 1000);
+            };
+            render();
+        }
+
+        // ==========================================
+        // 2. JOGO: FUGA DO SUNNY (Com tremor na batida)
+        // ==========================================
+        function iniciarPlataforma() {
+            document.getElementById('seletor-dificuldade').style.display = 'none';
+            tela.innerHTML = `
+                ${injetarBotaoSair()}
+                <button class="btn-back-menu" onclick="mostrarMenu()">❮ Menu</button>
+                <div style="position: absolute; top: 15px; left: 120px; background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; font-weight: bold; color: #fbbf24; z-index: 5; font-size:0.8rem;">
+                    Metros: <span id="scorePlat">0</span> | Vel: <span id="velPlat">100%</span>
+                </div>
+                <canvas id="canvasPlat" width="850" height="478" style="background: linear-gradient(180deg, #0b1329 0%, #1e1b4b 100%); width: 100%; height: 100%;"></canvas>
+            `;
+
+            const canvas = document.getElementById('canvasPlat');
+            const ctx = canvas.getContext('2d');
+            
+            let navio = { x: 80, y: 300, w: 85, h: 65, vy: 0, pulando: false };
+            let chaoY = 365; let obstaculos = []; let score = 0; let vivo = true; let ticks = 0;
+            
+            let velocidadeMundo = dificuldadeAtual === 'dificil' ? 12 : 7; 
+            let taxaSpawn = dificuldadeAtual === 'dificil' ? 55 : 90; 
+
+            const pularAction = (e) => {
+                if ((e.code === 'Space' || e.code === 'ArrowUp') && !navio.pulando && vivo) { navio.vy = -14; navio.pulando = true; }
+            };
+            window.addEventListener('keydown', pularAction);
+
+            window.loopPlataforma = setInterval(() => {
+                ticks++;
+                if (score > 0 && score % 150 === 0 && ticks % 10 === 0) {
+                    velocidadeMundo += 0.3; taxaSpawn = Math.max(35, taxaSpawn - 1);
+                    document.getElementById('velPlat').innerText = `${Math.round((velocidadeMundo / 7) * 100)}%`;
+                }
+
+                navio.vy += 0.7; navio.y += navio.vy;
+                if (navio.y >= chaoY - navio.h) { navio.y = chaoY - navio.h; navio.vy = 0; navio.pulando = false; }
+                if (ticks % Math.round(taxaSpawn) === 0 && vivo) {
+                    let hVariado = 35 + Math.floor(Math.random() * 20);
+                    obstaculos.push({ x: 850, y: 400 - hVariado, w: 30, h: hVariado });
+                }
+
+                if(vivo && ticks % 10 === 0) {
+                    score += 1;
+                    document.getElementById('scorePlat').innerText = score;
+                    if(score % 50 === 0) {
+                        ganharXP(2); 
+                        adicionarBerries(100000); 
+                    }
+                }
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = '#1e3a8a'; ctx.fillRect(0, chaoY, canvas.width, canvas.height - chaoY);
+
+                const nx = navio.x; const ny = navio.y;
+                ctx.fillStyle = '#5c2d17'; ctx.fillRect(nx + 38, ny - 15, 6, 55); 
+                ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.moveTo(nx + 41, ny - 10); ctx.quadraticCurveTo(nx + 65, ny + 5, nx + 41, ny + 25); ctx.quadraticCurveTo(nx + 15, ny + 5, nx + 41, ny - 10); ctx.fill(); 
+                ctx.fillStyle = '#78350f'; ctx.fillRect(nx + 10, ny + 35, 60, 20); 
+                ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(nx + 72, ny + 42, 8, 0, Math.PI*2); ctx.fill(); 
+
+                for (let i = obstaculos.length - 1; i >= 0; i--) {
+                    let obs = obstaculos[i]; obs.x -= velocidadeMundo;
+                    ctx.fillStyle = '#38bdf8'; ctx.beginPath(); ctx.moveTo(obs.x, obs.y + obs.h); ctx.lineTo(obs.x + obs.w, obs.y + obs.h); ctx.lineTo(obs.x + (obs.w/2), obs.y); ctx.closePath(); ctx.fill();
+
+                    if (nx < obs.x + obs.w && nx + navio.w > obs.x && ny < obs.y + obs.h && ny + navio.h > obs.y) {
+                        vivo = false; clearInterval(window.loopPlataforma); window.removeEventListener('keydown', pularAction);
+                        aplicarTremor();
+                        ctx.fillStyle = 'rgba(0,0,0,0.85)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.fillStyle = '#e11d48'; ctx.font = 'bold 36px Poppins'; ctx.textAlign = 'center'; ctx.fillText('SUNNY CAPTURADO!', canvas.width/2, canvas.height/2);
+                        setTimeout(mostrarMenu, 1500);
+                    }
+                    if (obs.x + obs.w < 0) obstaculos.splice(i, 1);
+                }
+            }, 1000 / 60);
+        }
+
+        // ==========================================
+        // 3. JOGO DA MEMÓRIA PESADELO
+        // ==========================================
+        function iniciarCartas() {
+            document.getElementById('seletor-dificuldade').style.display = 'none';
+            tela.innerHTML = `
+                ${injetarBotaoSair()}
+                <button class="btn-back-menu" onclick="mostrarMenu()">❮ Menu</button>
+                <div id="grid-cartas" style="margin-top:10px;"></div>
+            `;
+
+            const imagens = [
+                "imagens/luffy.png", "imagens/zoro.png", "imagens/nami.png", "imagens/sanji.png",
+                "imagens/chopper.png", "imagens/robin.png", "imagens/franky.png", "imagens/brook.png"
+            ];
+            
+            let delayChecagem = dificuldadeAtual === 'dificil' ? 400 : 700;
+            const baralho = [...imagens, ...imagens].sort(() => Math.random() - 0.5);
+            const grid = document.getElementById('grid-cartas');
+            let selecionadas = []; let acertos = 0;
+
+            baralho.forEach((imgUrl) => {
+                let card = document.createElement('div'); card.className = 'card3d'; card.dataset.character = imgUrl;
+                card.innerHTML = `<div class="card3d-inner"><div class="card3d-front">🏴‍☠️</div><div class="card3d-back"><img src="${imgUrl}" alt="Pirata"></div></div>`;
+
+                card.addEventListener('click', function(e) {
+                    if (selecionadas.length < 2 && !this.classList.contains('flipped') && !this.classList.contains('matched')) {
+                        this.classList.add('flipped'); selecionadas.push(this);
+                        if (selecionadas.length === 2) setTimeout(() => checarPar(e), delayChecagem);
+                    }
+                });
+                grid.appendChild(card);
+            });
+
+            function checarPar(e) {
+                let [c1, c2] = selecionadas;
+                if (c1.dataset.character === c2.dataset.character) {
+                    c1.classList.add('matched'); c2.classList.add('matched');
+                    acertos += 2;
+                    criarTextoFlutuante("+฿1M", e.clientX - tela.getBoundingClientRect().left, e.clientY - tela.getBoundingClientRect().top, '#10b981');
+                    adicionarBerries(1000000); 
+                    ganharXP(5); 
+
+                    if (acertos === baralho.length) {
+                        setTimeout(() => {
+                            tela.innerHTML = `
+                                ${injetarBotaoSair()}
+                                <div style="text-align: center;">
+                                    <h2>Grande Vitória na Memória!</h2>
+                                    <button class="btn-game" onclick="mostrarMenu()">Voltar ao Menu</button>
+                                </div>
+                            `;
+                        }, 500);
+                    }
+                } else { 
+                    c1.classList.remove('flipped'); c2.classList.remove('flipped'); 
+                    aplicarTremor();
+                }
+                selecionadas = [];
+            }
+        }
+
+        // ==========================================
+        // 4. JOGO: HAKI DE OBSERVAÇÃO
+        // ==========================================
+        
+        function iniciarTreinoHaki() {
+            document.getElementById('seletor-dificuldade').style.display = 'none';
+            let alvosAcertados = 0;
+            let alvosGerados = 0;
+            const metaAlvos = 5;
+            let loopsAlvosAtivos = []; // Guarda os intervalos de movimento para limpá-los depois
+
+            tela.innerHTML = `
+                ${injetarBotaoSair()}
+                <button class="btn-back-menu" id="sair-haki-btn">❮🏴‍☠️</button>
+                <div style="text-align:center; width:100%; height:100%; user-select:none;">
+                    <h2 style="font-size:1.2rem; margin-bottom:2px; color:#38bdf8; text-shadow: 0 0 10px rgba(56,189,248,0.4);">👁️ Desafio do Haki de Observação</h2>
+                    <p style="font-size:0.8rem; color:#94a3b8;">Preveja o movimento e destrua as esferas antes que explodam!</p>
+                    <p style="font-size:0.9rem; font-weight:bold; margin-top:3px; color:#fbbf24;">Progresso: <span id="alvos-cont">0</span>/${metaAlvos}</p>
+                    <div id="campo-treino" style="width:100%; height:270px; position:relative; background:radial-gradient(circle, rgba(15,23,42,0.8) 0%, rgba(2,6,23,0.9) 100%); border-radius:20px; margin-top:8px; overflow:hidden; border:2px solid #38bdf8; box-shadow: inset 0 0 20px rgba(56,189,248,0.15);"></div>
+                </div>
+            `;
+            
+            const campo = document.getElementById('campo-treino');
+            
+            // Força a limpeza de todos os loops se o jogador clicar no botão de sair pelo menu interno ou pelo "X"
+            const limparTodosOsLoops = () => {
+                loopsAlvosAtivos.forEach(intervalId => clearInterval(intervalId));
+                loopsAlvosAtivos = [];
+            };
+            document.getElementById('sair-haki-btn').addEventListener('click', limparTodosOsLoops);
+            document.querySelector('.btn-exit').addEventListener('click', limparTodosOsLoops);
+
+            function criarAlvoMovel() {
+                if (alvosAcertados >= metaAlvos) {
+                    limparTodosOsLoops();
+                    adicionarBerries(2000000); // Recompensa aumentada para 2 Milhões!
+                    ganharXP(15);
+                    dispararNotificacao("Visão do Futuro!", "Haki de Observação perfeito. +฿ 2.000.000");
+                    mostrarMenu();
+                    return;
+                }
+
+                // Impede que criem alvos infinitos na tela caso o jogador demore
+                if(document.querySelectorAll('.esfera-haki').length >= 2) return;
+
+                const alvo = document.createElement('div');
+                alvo.className = 'esfera-haki';
+                alvo.innerText = "☠"; // Mudado para uma esfera de energia estilizada
+                
+                // Configurações de tamanho baseado no nível selecionado
+                let tamanho = dificuldadeAtual === 'dificil' ? 30 : 45;
+                alvo.style.cssText = `
+                    position: absolute;
+                    font-size: ${dificuldadeAtual === 'dificil' ? '1.5rem' : '2.3rem'};
+                    cursor: pointer;
+                    width: ${tamanho}px;
+                    height: ${tamanho}px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: transform 0.1s linear, filter 0.3s;
+                    filter: drop-shadow(0 0 8px #a855f7);
+                    animation: neonPulse 0.8s ease-in-out infinite alternate;
+                `;
+
+                // Posição de spawn aleatória dentro do campo
+                let posX = Math.random() * (campo.clientWidth - tamanho);
+                let posY = Math.random() * (campo.clientHeight - tamanho);
+                alvo.style.left = `${posX}px`;
+                alvo.style.top = `${posY}px`;
+
+                // Vetores de velocidade e direção (O modo difícil duplica a velocidade)
+                let baseVel = dificuldadeAtual === 'dificil' ? 5 : 2.5;
+                let velX = (Math.random() > 0.5 ? 1 : -1) * (baseVel + Math.random() * 2);
+                let velY = (Math.random() > 0.5 ? 1 : -1) * (baseVel + Math.random() * 2);
+
+                // Tempo de vida do alvo antes de explodir sozinho (5 segundos no fácil, 3 no difícil)
+                let tempoDeVida = dificuldadeAtual === 'dificil' ? 3000 : 5000;
+                
+                // Transforma a esfera em vermelha piscando quando estiver perto de explodir
+                const avisoExplosaoTimeout = setTimeout(() => {
+                    alvo.style.filter = "drop-shadow(0 0 15px #ef4444) brightness(1.3)";
+                }, tempoDeVida - 1200);
+
+                // Se o jogador não clicar a tempo, toma penalidade e a tela treme
+                const autodestruiçãoTimeout = setTimeout(() => {
+                    if (campo.contains(alvo)) {
+                        alvo.remove();
+                        aplicarTremor();
+                        dispararNotificacao("Explosão!", "Você não previu o ataque a tempo.");
+                        // Sorteia um novo alvo para o jogo continuar fluindo
+                        setTimeout(criarAlvoMovel, 400);
+                    }
+                }, tempoDeVida);
+
+                // LOOP DE MOVIMENTO DA ESFERA (Física de rebote nas bordas)
+                const loopMovimento = setInterval(() => {
+                    if (!campo.contains(alvo)) {
+                        clearInterval(loopMovimento);
+                        return;
+                    }
+
+                    posX += velX;
+                    posY += velY;
+
+                    // Colisão com as laterais (Esquerda / Direita)
+                    if (posX <= 0 || posX >= (campo.clientWidth - tamanho)) {
+                        velX *= -1;
+                        posX = posX <= 0 ? 0 : (campo.clientWidth - tamanho);
+                    }
+                    // Colisão com teto e chão (Topo / Base)
+                    if (posY <= 0 || posY >= (campo.clientHeight - tamanho)) {
+                        velY *= -1;
+                        posY = posY <= 0 ? 0 : (campo.clientHeight - tamanho);
+                    }
+
+                    alvo.style.left = `${posX}px`;
+                    alvo.style.top = `${posY}px`;
+                }, 1000 / 60); // Rodando liso a 60 frames por segundo
+
+                loopsAlvosAtivos.push(loopMovimento);
+
+                // Ação de clique com o mouse / toque com o dedo
+                alvo.onclick = (e) => {
+                    e.stopPropagation();
+                    clearTimeout(avisoExplosaoTimeout);
+                    clearTimeout(autodestruiçãoTimeout);
+                    clearInterval(loopMovimento);
+
+                    alvosAcertados++;
+                    document.getElementById('alvos-cont').innerText = alvosAcertados;
+                    
+                    let lx = e.clientX - tela.getBoundingClientRect().left;
+                    let ly = e.clientY - tela.getBoundingClientRect().top;
+                    criarTextoFlutuante("PREVISTO! ⚡", lx, ly, '#38bdf8');
+                    
+                    alvo.remove();
+                    // Cria o próximo alvo com um leve delay para dar dinâmica de pausa
+                    setTimeout(criarAlvoMovel, 300);
+                };
+
+                campo.appendChild(alvo);
+            }
+
+            // Inicializa a primeira leva de esferas
+            criarAlvoMovel();
+            // No modo difícil, spawna uma segunda esfera secundária para dobrar a adrenalina
+            if(dificuldadeAtual === 'dificil') {
+                setTimeout(criarAlvoMovel, 1000);
+            }
+        }
+
+
+        // ==========================================
+        // 5. JOGO: LUFFY CLICKER GEARS (Com textos flutuantes rápidos)
+        // ==========================================
+        function iniciarCliqueGears() {
+            document.getElementById('seletor-dificuldade').style.display = 'none';
+            let cliques = 0;
+            let metaCliques = dificuldadeAtual === 'dificil' ? 45 : 25;
+
+            tela.innerHTML = `
+                ${injetarBotaoSair()}
+                <button class="btn-back-menu" onclick="mostrarMenu()">❮ Menu</button>
+                <div style="text-align:center;">
+                    <h2 style="font-size:1.2rem;">Luffy Clicker: Ative o Gear 5!</h2>
+                    <p style="font-size:0.8rem; color:#94a3b8; margin-bottom:10px;">Clique rápido para carregar a energia</p>
+                    <div id="corpo-clicker" onclick="computarClique(event)" style="font-size:4.5rem; cursor:pointer; user-select:none; transition:transform 0.05s; display:inline-block; filter:drop-shadow(0 0 10px #fbbf24);">🍖</div>
+                    <h3 style="margin-top:10px; font-size:1.1rem;">Progresso: <span id="cont-cliques">0</span>/${metaCliques}</h3>
+                </div>
+            `;
+            
+            window.computarClique = (e) => {
+                cliques++;
+                document.getElementById('cont-cliques').innerText = cliques;
+                const obj = document.getElementById('corpo-clicker');
+                obj.style.transform = "scale(0.82)";
+                setTimeout(() => obj.style.transform = "scale(1)", 50);
+
+                // Gera o multiplicador flutuante em cima do ponteiro do mouse
+                let localX = e.clientX - tela.getBoundingClientRect().left;
+                let localY = e.clientY - tela.getBoundingClientRect().top;
+                criarTextoFlutuante(`+฿${(35000).toLocaleString()}`, localX, localY, '#fbbf24');
+
+                adicionarBerries(35000);
+
+                if (cliques >= metaCliques) {
+                    adicionarBerries(1000000);
+                    ganharXP(10);
+                    dispararNotificacao("Gear 5 Ativado!", "Energia máxima liberada!");
+                    mostrarMenu();
+                }
+            };
+        }
+
+        // ==========================================
+        // 6. JOGO: BATALHA DE CANHÕES
+        // ==========================================
+        function iniciarBatalhaNaval() {
+            document.getElementById('seletor-dificuldade').style.display = 'none';
+            let naviosDestruidos = 0;
+            let totalInimigos = dificuldadeAtual === 'dificil' ? 6 : 3;
+
+            tela.innerHTML = `
+                ${injetarBotaoSair()}
+                <button class="btn-back-menu" onclick="mostrarMenu()">❮ Menu</button>
+                <div style="text-align:center; width:100%;">
+                    <h2 style="font-size:1.1rem; margin-bottom:5px;">Bombardeio à Frota da Marinha</h2>
+                    <p style="font-size:0.8rem; color:#94a3b8;">Encontre e afunde os <span id="marinha-cont">${totalInimigos}</span> navios escondidos!</p>
+                    <div id="grade-canhao" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:6px; max-width:320px; margin:10px auto 0 auto;"></div>
+                </div>
+            `;
+
+            const grade = document.getElementById('grade-canhao');
+            let slots = Array(16).fill('🌊');
+            for(let i=0; i<totalInimigos; i++) slots[i] = '🚢';
+            slots.sort(() => Math.random() - 0.5);
+
+            slots.forEach((conteudo) => {
+                const bloco = document.createElement('div');
+                bloco.style.cssText = "background:#1e293b; height:50px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1.3rem; border:1px solid rgba(255,255,255,0.05); transition: all 0.2s;";
+                bloco.innerText = "❓";
+
+                bloco.onclick = (e) => {
+                    if (bloco.innerText !== "❓") return;
+                    
+                    let lx = e.clientX - tela.getBoundingClientRect().left;
+                    let ly = e.clientY - tela.getBoundingClientRect().top;
+
+                    if (conteudo === '🚢') {
+                        bloco.innerText = "💥";
+                        bloco.style.background = "rgba(225, 29, 72, 0.2)";
+                        bloco.style.borderColor = "#e11d48";
+                        naviosDestruidos++;
+                        aplicarTremor();
+                        criarTextoFlutuante("CRITICAL BOOM!", lx, ly, '#e11d48');
+                        adicionarBerries(800000);
+                        ganharXP(6);
+                        
+                        if (naviosDestruidos >= totalInimigos) {
+                            setTimeout(() => {
+                                dispararNotificacao("Vitória Naval!", "A frota inimiga recuou!");
+                                mostrarMenu();
+                            }, 500);
+                        }
+                    } else {
+                        bloco.innerText = "🌊";
+                        bloco.style.background = "rgba(56, 189, 248, 0.1)";
+                        bloco.style.borderColor = "#38bdf8";
+                        criarTextoFlutuante("Água...", lx, ly, '#38bdf8');
+                        adicionarBerries(5000); 
+                    }
+                };
+                grade.appendChild(bloco);
+            });
+        }
+
+        mostrarMenu();
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,199 @@
+<!DOCTYPE html> 
+<html lang="pt-BR"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>One Piece</title> 
+    <link rel="stylesheet" href="style.css"> 
+</head> 
+<body> 
+    <!-- Fundo de ondas animadas nativo -->
+    <svg class="waves" xmlns="http://w3.org" xmlns:xlink="http://w3.org"
+    viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+        <defs>
+            <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18v44h-352z" />
+        </defs>
+        <g class="parallax-waves">
+            <use xlink:href="#gentle-wave" x="48" y="0" />
+            <use xlink:href="#gentle-wave" x="48" y="3" />
+            <use xlink:href="#gentle-wave" x="48" y="5" />
+            <use xlink:href="#gentle-wave" x="48" y="7" />
+        </g>
+    </svg>
+
+    <!-- Painel Interativo de Controle -->
+    <div class="painel-controle hidden">
+        <button id="btn-som" class="btn-interativo">🎵 Som do Mar</button>
+        <input type="text" id="busca-pirata" placeholder="🔍 Buscar por nome ou função...">
+        <a href="jogo.html" class="btn-interativo btn-jogo" style="text-decoration: none;">🎮 Iniciar Jogo</a>
+    </div>
+
+    <!-- Elemento de áudio nativo -->
+    <audio id="som-mar" loop src="https://soundhelix.com"></audio>
+
+    <!-- Seções de Texto com Links Diretos -->
+    <section class="hidden"> 
+        <h1 class="hidden"><a href="tesouro.html" class="link-titulo">O Grande Tesouro One Piece ➔</a></h1> 
+        <p class="hidden">Gol D. Roger, conhecido como o Rei dos Piratas, conquistou tudo o que o mundo tinha a oferecer. Suas últimas palavras antes de morrer enviaram milhares de mares afora em busca de sua riqueza acumulada: "Meu tesouro? Se quiserem, podem pegá-lo. Procurem-no! Deixei tudo naquele lugar!"</p> 
+    </section> 
+
+    <section class="hidden"> 
+        <h1 class="hidden"><a href="luffy.html" class="link-titulo">Monkey D. Luffy ➔</a></h1> 
+        <p class="hidden">Movido pela admiração por Shanks e pelo sonho de se tornar o novo Rei dos Piratas, o jovem Luffy ruma ao oceano. Após comer a Akuma no Mi da borracha, ele ganha poderes elásticos, mas perde a capacidade de nadar. Ele não descansará até encontrar a lendária idha de Laugh Tale.</p> 
+    </section> 
+
+    <section class="hidden"> 
+        <h1 class="hidden"><a href="tripulacao.html" class="link-titulo">Os Piratas do Chapéu de Palha ➔</a></h1> 
+        <p class="hidden">Para navegar pela perigosa Grand Line, Luffy reúne uma tripulação de elite com sonhos ambiciosos: o espadachim Zoro, a navegadora Nami, o atirador Usopp, o cozinheiro Sanji, o médico Chopper, a arqueóloga Robin, o engenheiro Franky, o músico Brook e o timoneiro Jinbe.</p> 
+    </section> 
+
+    <!-- Seção do Logo Oficial -->
+    <section class="hidden"> 
+        <img src="image/one-piece-logo.png" alt="Logo Oficial de One Piece"> 
+    </section> 
+
+    <!-- Galeria de Cards Interativos Compactos -->
+    <section class="container hidden"> 
+        <!-- Card 1: Luffy -->
+        <div class="card-3d hidden" data-nome="monkey d. luffy capitão">
+            <div class="foto">
+                <div class="frente">
+                    <img src="image/imagem1.jpg" alt="Monkey D. Luffy">
+                    <div class="info-bloco">
+                        <div class="nome-personagem">Monkey D. Luffy</div>
+                        <div class="cargo-tag capitao">Capitão</div>
+                        <p class="detalhe-pirata">Líder do bando, usuário de Akuma no Mi e portador do Haki do Conquistador. Busca a liberdade absoluta nos mares.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Zoro -->
+        <div class="card-3d hidden" data-nome="roronoa zoro espadachim combate">
+            <div class="foto">
+                <div class="frente">
+                    <img src="image/imagem2.jpg" alt="Roronoa Zoro">
+                    <div class="info-bloco">
+                        <div class="nome-personagem">Roronoa Zoro</div>
+                        <div class="cargo-tag espadachim">Espadachim</div>
+                        <p class="detalhe-pirata">Mestre no estilo de três espadas (Santoryu). Primeiro aliado de Luffy, focado em se tornar o maior do mundo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Nami -->
+        <div class="card-3d hidden" data-nome="nami navegadora mapas">
+            <div class="foto">
+                <div class="frente">
+                    <img src="image/imagem3.jpg" alt="Nami">
+                    <div class="info-bloco">
+                        <div class="nome-personagem">Nami</div>
+                        <div class="cargo-tag navegadora">Navegadora</div>
+                        <p class="detalhe-pirata">Cartógrafa genial capaz de prever o clima com precisão absoluta. Seu sonho é desenhar o mapa-mundi completo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4: Sanji -->
+        <div class="card-3d hidden" data-nome="vinsmoke sanji cozinheiro combate">
+            <div class="foto">
+                <div class="frente">
+                    <img src="image/imagem4.jpg" alt="Vinsmoke Sanji">
+                    <div class="info-bloco">
+                        <div class="nome-personagem">Vinsmoke Sanji</div>
+                        <div class="cargo-tag cozinheiro">Cozinheiro</div>
+                        <p class="detalhe-pirata">Mestre da culinária marítima e lutador marcial que utiliza apenas as pernas. Procura pelo lendário mar All Blue.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 5: Usopp -->
+        <div class="card-3d hidden" data-nome="usopp atirador precisao">
+            <div class="foto">
+                <div class="frente">
+                    <img src="image/imagem5.jpg" alt="Usopp">
+                    <div class="info-bloco">
+                        <div class="nome-personagem">Usopp</div>
+                        <div class="cargo-tag atirador">Atirador</div>
+                        <p class="detalhe-pirata">Especialista em disparos de longa distância e engenharia tática rudimentar. Almeja ser um bravo guerreiro.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 6: Chopper -->
+        <div class="card-3d hidden" data-nome="tony tony chopper medico doutor">
+            <div class="foto">
+                <div class="frente">
+                    <img src="image/imagem6.jpg" alt="Chopper">
+                    <div class="info-bloco">
+                        <div class="nome-personagem">Tony Tony Chopper</div>
+                        <div class="cargo-tag medico">Médico</div>
+                        <p class="detalhe-pirata">Rena que consumiu a Hito Hito no Mi. Cientista médico formidável que busca a cura para todas as doenças.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 7: Robin -->
+        <div class="card-3d hidden" data-nome="nico robin arqueologa historia">
+            <div class="foto">
+                <div class="frente">
+                    <img src="image/imagem7.jpg" alt="Robin">
+                    <div class="info-bloco">
+                        <div class="nome-personagem">Nico Robin</div>
+                        <div class="cargo-tag arqueologa">Arqueóloga</div>
+                        <p class="detalhe-pirata">Única sobrevivente de Ohara capaz de ler os Poneglyphs. Estuda a história oculta do Século Perdido.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 8: Brook -->
+        <div class="card-3d hidden" data-nome="brook musico espadachim">
+            <div class="foto">
+                <div class="frente">
+                    <img src="image/imagem8.jpg" alt="Brook">
+                    <div class="info-bloco">
+                        <div class="nome-personagem">Brook</div>
+                        <div class="cargo-tag musico">Músico</div>
+                        <p class="detalhe-pirata">Esqueleto vivo ressuscitado pela Yomi Yomi no Mi. Esgrimista ágil que utiliza técnicas musicais hipnóticas.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 9: Franky -->
+        <div class="card-3d hidden" data-nome="franky engenheiro carpinteiro">
+            <div class="foto">
+                <div class="frente">
+                    <img src="image/imagem9.jpg" alt="Franky">
+                    <div class="info-bloco">
+                        <div class="nome-personagem">Franky</div>
+                        <div class="cargo-tag engenheiro">Engenheiro</div>
+                        <p class="detalhe-pirata">Cyborg construtor de navios. Criador do Thousand Sunny, viaja para garantir que o navio cruze o fim do mundo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 10: Jinbe -->
+        <div class="card-3d hidden" data-nome="jinbe timoneiro combate">
+            <div class="foto">
+                <div class="frente">
+                    <img src="image/imagem10.jpg" alt="Jinbe">
+                    <div class="info-bloco">
+                        <div class="nome-personagem">Jinbe</div>
+                        <div class="cargo-tag timoneiro">Timoneiro</div>
+                        <p class="detalhe-pirata">Mestre do Karatê Homem-Peixe e timoneiro formidável. Conduz o navio com maestria pelas violentas correntes.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section> 
+</body> 
+<script src="script.js"></script> 
+</html>

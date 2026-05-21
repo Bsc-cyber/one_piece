@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Piece - O Despertar</title>
+    <style>
+        @import url('https://googleapis.com');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #020617;
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #f8fafc;
+            position: relative;
+        }
+
+        /* TELA DE INTRODUÇÃO CINEMATOGRÁFICA */
+        .intro-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            z-index: 10;
+            transition: opacity 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Animação da Logo surgindo do fundo com brilho */
+        .logo-cinematica {
+            max-width: 320px;
+            opacity: 0;
+            transform: scale(0.3) translateZ(-500px);
+            filter: drop-shadow(0 0 0px rgba(234, 179, 8, 0));
+            animation: zoomLogo 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes zoomLogo {
+            0% {
+                opacity: 0;
+                transform: scale(0.3) rotate(-5deg);
+                filter: drop-shadow(0 0 0px rgba(234, 179, 8, 0));
+            }
+            50% {
+                opacity: 1;
+                filter: drop-shadow(0 0 30px rgba(234, 179, 8, 0.6));
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+                filter: drop-shadow(0 0 50px rgba(234, 179, 8, 0.8));
+            }
+        }
+
+        /* Efeito de Máquina de Escrever na frase secreta */
+        .texto-datilografado {
+            margin-top: 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #eab308;
+            letter-spacing: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 0;
+            border-right: 3px solid #eab308;
+            animation: digitar 3s steps(40, end) forwards, cursor 0.5s step-end infinite;
+            animation-delay: 2.5s;
+        }
+
+        @keyframes digitar {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes cursor {
+            from, to { border-color: transparent }
+            50% { border-color: #eab308; }
+        }
+
+        /* Camada escura que some no final */
+        .fade-out {
+            opacity: 0 !important;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="intro-container" id="intro">
+        <img src="image/one-piece-logo.png" alt="Logo One Piece" class="logo-cinematica">
+        <div class="texto-datilografado" id="frase">O MUNDO ENTRARÁ EM UMA NOVA ERA!</div>
+    </div>
+
+    <script>
+        // Aguarda as animações terminarem e redireciona automaticamente para ex_10.html
+        setTimeout(() => {
+            const intro = document.getElementById('intro');
+            intro.classList.add('fade-out'); 
+            
+            setTimeout(() => {
+                window.location.href = 'ex_10.html';
+            }, 1500); 
+        }, 6500); 
+    </script>
+</body>
+</html>
